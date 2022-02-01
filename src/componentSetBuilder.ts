@@ -23,8 +23,8 @@ export type ComponentSetOptions = {
   packagenames?: string[];
   sourcepath?: string[];
   manifest?: ManifestOption;
-
   metadata?: MetadataOption;
+  username?: string;
   apiversion?: string;
   sourceapiversion?: string;
 };
@@ -42,8 +42,12 @@ export class ComponentSetBuilder {
     const logger = Logger.childFromRoot('createComponentSet');
     let componentSet: ComponentSet;
 
-    const { sourcepath, manifest, metadata, packagenames, apiversion, sourceapiversion } = options;
+    const { sourcepath, manifest, metadata, packagenames, apiversion, sourceapiversion, username } = options;
     try {
+      if (username) {
+        logger.debug(`Building ComponentSet from all metadata in org: ${username}`);
+        componentSet = await ComponentSet.fromConnection(username);
+      }
       if (sourcepath) {
         logger.debug(`Building ComponentSet from sourcepath: ${sourcepath.toString()}`);
         const fsPaths: string[] = [];

@@ -27,7 +27,7 @@ interface CreateCommandResult {
   path: string;
 }
 
-const xorFlags = ['metadata', 'sourcepath'];
+const xorFlags = ['metadata', 'sourcepath', 'fromorg'];
 export class create extends SourceCommand {
   public static readonly description = messages.getMessage('description');
   public static readonly examples = messages.getMessage('examples').split(os.EOL);
@@ -58,6 +58,12 @@ export class create extends SourceCommand {
       char: 'o',
       description: messages.getMessage('flags.outputdir'),
     }),
+    fromorg: flags.string({
+      char: 'u',
+      description: 'build a manifest from all source in the target org',
+      exactlyOne: xorFlags,
+      hidden: true,
+    }),
   };
   private manifestName: string;
   private outputDir: string;
@@ -84,6 +90,7 @@ export class create extends SourceCommand {
         metadataEntries: this.getFlag<string[]>('metadata'),
         directoryPaths: this.getPackageDirs(),
       },
+      username: this.getFlag('fromorg'),
     });
 
     // add the .xml suffix if the user just provided a file name
